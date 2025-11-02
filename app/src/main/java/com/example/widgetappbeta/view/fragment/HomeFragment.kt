@@ -70,6 +70,8 @@ class HomeFragment : Fragment(){
             val recycler = binding.recyclerview
             val layoutManager = LinearLayoutManager(context)
             recycler.layoutManager = layoutManager
+            // pendiente
+
 
         }
     }
