@@ -15,7 +15,7 @@ interface InventoryDao {
     suspend fun saveInventory(inventory: Inventory)
 
     @Query("SELECT * FROM inventory")
-    suspend fun getListInventory(): List<Inventory>
+    suspend fun getListInventory(): MutableList<Inventory>
 
     @Delete
     suspend fun deleteInventory(inventory: Inventory)
