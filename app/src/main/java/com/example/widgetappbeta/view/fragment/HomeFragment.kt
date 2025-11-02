@@ -6,11 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.widgetappbeta.R
 import com.example.widgetappbeta.databinding.FragmentHomeBinding
+import com.example.widgetappbeta.view.adapter.InventoryAdapter
 import com.example.widgetappbeta.viewmodel.InventoryViewModel
 
 
@@ -35,6 +37,9 @@ class HomeFragment : Fragment(){
         setupToolbar()
         // agragando evento al boton +
         setupFloatingButton()
+        //observador del viewmodel
+        observadorViewModel()
+
 
     }
 
@@ -63,21 +68,24 @@ class HomeFragment : Fragment(){
         observerProgress()
     }
 
-    private fun observerProgress() {
+    private fun observerListInventory() {
         inventoryViewModel.getListInventory()
         inventoryViewModel.listInventory.observe(viewLifecycleOwner){
             listInventory ->
             val recycler = binding.recyclerview
             val layoutManager = LinearLayoutManager(context)
             recycler.layoutManager = layoutManager
-            // pendiente
-
+            val adapter = InventoryAdapter(listInventory, findNavController())
+            recycler.adapter = adapter
+            adapter.notifyDataSetChanged()
 
         }
     }
 
-    private fun observerListInventory() {
-        TODO("Not yet implemented")
+    private fun observerProgress() {
+        inventoryViewModel.progresState.observe(viewLifecycleOwner){
+            status -> binding.progressBar.isVisible = status
+        }
     }
 
 }
