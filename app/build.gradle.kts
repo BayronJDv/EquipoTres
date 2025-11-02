@@ -50,6 +50,8 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.fragment)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.cardview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -58,6 +60,11 @@ dependencies {
     implementation("android.room:room-runtime:2.5.2")
     ksp("androidx.room:room-compiler:2.5.2")
     implementation("androidx.room:room-ktx:2.5.2")
+
+    //dependencia live data
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
+    //dependecia corrutinas
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
 
 }

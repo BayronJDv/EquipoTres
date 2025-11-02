@@ -6,19 +6,25 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.widgetappbeta.R
 import com.example.widgetappbeta.databinding.FragmentHomeBinding
+import com.example.widgetappbeta.viewmodel.InventoryViewModel
 
 
 class HomeFragment : Fragment(){
     private lateinit var binding: FragmentHomeBinding
+    private val inventoryViewModel: InventoryViewModel by viewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
         return binding.root
     }
 
@@ -27,7 +33,7 @@ class HomeFragment : Fragment(){
 
         //configurar el toolbar
         setupToolbar()
-        // agragando evento al boton =
+        // agragando evento al boton +
         setupFloatingButton()
 
     }
@@ -49,6 +55,27 @@ class HomeFragment : Fragment(){
         binding.floatingActionButton.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_addFragment)
         }
+    }
+
+
+    private fun observadorViewModel(){
+        observerListInventory()
+        observerProgress()
+    }
+
+    private fun observerProgress() {
+        inventoryViewModel.getListInventory()
+        inventoryViewModel.listInventory.observe(viewLifecycleOwner){
+            listInventory ->
+            val recycler = binding.recyclerview
+            val layoutManager = LinearLayoutManager(context)
+            recycler.layoutManager = layoutManager
+
+        }
+    }
+
+    private fun observerListInventory() {
+        TODO("Not yet implemented")
     }
 
 }
