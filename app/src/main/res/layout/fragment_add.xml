@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <!-- Si luego usas ViewModel, puedes declararlo aquí -->
+        <!-- Declaración de ViewModel siguiendo el patrón MVVM -->
+        <variable
+            name="viewModel"
+            type="com.example.widgetappbeta.viewmodel.AddViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -54,7 +57,8 @@
                 android:textColor="@android:color/white"
                 android:textColorHint="@android:color/white"
                 android:cursorVisible="true"
-                android:textCursorDrawable="@null" />
+                android:textCursorDrawable="@null"
+                android:text="@={viewModel.codigo}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Campo Nombre artículo -->
@@ -82,7 +86,8 @@
                 android:textColor="@android:color/white"
                 android:textColorHint="@android:color/white"
                 android:cursorVisible="true"
-                android:textCursorDrawable="@null" />
+                android:textCursorDrawable="@null"
+                android:text="@={viewModel.nombre}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Campo Precio -->
@@ -110,7 +115,8 @@
                 android:textColor="@android:color/white"
                 android:textColorHint="@android:color/white"
                 android:cursorVisible="true"
-                android:textCursorDrawable="@null" />
+                android:textCursorDrawable="@null"
+                android:text="@={viewModel.precio}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Campo Cantidad -->
@@ -138,7 +144,8 @@
                 android:textColor="@android:color/white"
                 android:textColorHint="@android:color/white"
                 android:cursorVisible="true"
-                android:textCursorDrawable="@null" />
+                android:textCursorDrawable="@null"
+                android:text="@={viewModel.cantidad}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Botón Guardar -->
@@ -147,7 +154,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Guardar"
-            android:enabled="false"
+            android:enabled="@{viewModel.isGuardarEnabled}"
             android:backgroundTint="#FA8523"
             android:textColor="@android:color/white"
             android:textStyle="bold"
