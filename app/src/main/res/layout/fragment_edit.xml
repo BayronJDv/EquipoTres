@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <!-- Aquí podrías declarar tu ViewModel si usas data binding -->
+        <!-- -->
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,28 +27,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Contenedor de campos -->
+        <!-- Contenedor -->
         <LinearLayout
             android:id="@+id/formContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="32dp"
-            android:padding="8dp"
+            android:layout_margin="16dp"
             app:layout_constraintTop_toBottomOf="@id/toolbarEdit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- ID del producto (solo lectura) -->
+            <!-- ID (solo lectura) -->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilId"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="false"
-                android:textColor="@android:color/white"
+                app:boxStrokeColor="@android:color/transparent"
                 app:boxStrokeWidth="0dp"
-                app:boxStrokeColor="@android:color/darker_gray">
-
+                app:boxBackgroundMode="outline"
+                app:hintTextColor="@android:color/white"
+                android:enabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etIdEdit"
@@ -57,18 +57,21 @@
                     android:focusable="false"
                     android:cursorVisible="false"
                     android:textColor="@android:color/white"
-                    android:textColorHint="@android:color/darker_gray"
-                    android:inputType="none" />
+                    android:backgroundTint="@android:color/transparent" />
             </com.google.android.material.textfield.TextInputLayout>
+
 
             <!-- Nombre -->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilNombreEdit"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Nombre artículo"
-                app:hintTextColor="@android:color/white"
-                app:boxStrokeColor="@color/light_gray">
+                app:boxStrokeColor="@color/gray_to_white"
+                app:boxStrokeWidth="1dp"
+                app:hintTextColor="@android:color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etNombreEdit"
@@ -77,17 +80,20 @@
                     android:inputType="textCapWords"
                     android:maxLength="40"
                     android:textColor="@android:color/white"
-                    app:boxStrokeColor="@color/light_gray" />
+                    android:textColorHint="@android:color/white" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Precio -->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilPrecioEdit"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Precio"
-                app:hintTextColor="@android:color/white"
-                app:boxStrokeColor="@color/light_gray">
+                app:boxStrokeColor="@color/gray_to_white"
+                app:boxStrokeWidth="1dp"
+                app:hintTextColor="@android:color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPrecioEdit"
@@ -96,17 +102,20 @@
                     android:inputType="numberDecimal"
                     android:maxLength="20"
                     android:textColor="@android:color/white"
-                    app:boxStrokeColor="@color/light_gray" />
+                    android:textColorHint="@android:color/white" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Cantidad -->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilCantidadEdit"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Cantidad"
-                app:hintTextColor="@android:color/white"
-                app:boxStrokeColor="@color/light_gray">
+                app:boxStrokeColor="@color/gray_to_white"
+                app:boxStrokeWidth="1dp"
+                app:hintTextColor="@android:color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCantidadEdit"
@@ -115,17 +124,18 @@
                     android:inputType="number"
                     android:maxLength="4"
                     android:textColor="@android:color/white"
-                    android:textColorHint="@android:color/darker_gray" />
+                    android:textColorHint="@android:color/white" />
             </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
 
-        <!-- Botón Guardar cambios -->
+        <!-- Botón Guardar -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGuardarCambios"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="32dp"
             android:layout_marginTop="24dp"
-            android:layout_marginHorizontal="24dp"
             android:text="Editar"
             android:textAllCaps="false"
             android:textColor="@android:color/white"

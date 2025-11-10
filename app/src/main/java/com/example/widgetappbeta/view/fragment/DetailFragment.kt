@@ -77,9 +77,9 @@ class DetailFragment : Fragment() {
 
         val total = producto.price * producto.quantity
 
-        binding.tvNombre.text = "Nombre: ${producto.name}"
-        binding.tvPrecio.text = "Precio unidad: $ ${formato.format(producto.price)}"
-        binding.tvCantidad.text = "Cantidad: ${producto.quantity}"
-        binding.tvTotal.text = "Total: $ ${formato.format(total)}"
+        binding.tvNombre.text = "${producto.name}"
+        binding.tvPrecio.text = "$ ${formato.format(producto.price)}"
+        binding.tvCantidad.text = "${producto.quantity}"
+        binding.tvTotal.text = "$ ${formato.format(total)}"
     }
 }
