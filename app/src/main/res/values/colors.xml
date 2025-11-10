@@ -2,7 +2,12 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="myblue">#FFFFFFFF</color>
     <color name="mygray">#424242 </color>
     <color name="myorange">#FF5722</color>
+    <color name="WidgetBlack">#CC000000</color>
+    <color name="WidgetOrange">#e7522e</color>
+    <color name="WidgetOrangeIcon">#FA8523</color>
 
 </resources>
