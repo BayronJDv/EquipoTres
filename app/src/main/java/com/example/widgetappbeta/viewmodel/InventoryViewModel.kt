@@ -7,44 +7,53 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.widgetappbeta.model.Inventory
 import com.example.widgetappbeta.repository.InventoryRepository
-import com.example.widgetappbeta.sharedprefs.PrefsManager
 import kotlinx.coroutines.launch
 
-
 class InventoryViewModel(application: Application) : AndroidViewModel(application) {
-    val context = getApplication<Application>()
-    private val inventoryRepository = InventoryRepository(context)
 
+    // Solo una instancia del repositorio
+    private val repository = InventoryRepository(application.applicationContext)
 
-    // a esta lista accede el view model
-    private val _listImventory = MutableLiveData<MutableList<Inventory>>()
-    // esta lisat solo es la de lectura a la que accede la view
-    val listInventory: LiveData<MutableList<Inventory>> get()= _listImventory
+    // LiveData con la lista de productos
+    private val _listInventory = MutableLiveData<MutableList<Inventory>>()
+    val listInventory: LiveData<MutableList<Inventory>> get() = _listInventory
 
+    // Estado de carga
+    private val _progressState = MutableLiveData(false)
+    val progressState: LiveData<Boolean> get() = _progressState
 
-    // lo mismo para el estado de la consulta
-    private val _progresState = MutableLiveData(false)
-    val progresState: LiveData<Boolean> get() = _progresState
-
-
-
-
-    // funcion para obetener el inventario
-    fun getListInventory(){
+    // Guardar producto
+    fun saveInventory(inventory: Inventory) {
         viewModelScope.launch {
-            _progresState.value = true
-            try {
-                _listImventory.value = inventoryRepository.getListInventory()
-                _progresState.value = false
-
-            } catch (e: Exception){
-                _progresState.value = false
-
-
-            }
+            repository.saveInventory(inventory)
         }
     }
 
+    // Eliminar producto
+    fun deleteInventory(inventory: Inventory) {
+        viewModelScope.launch {
+            repository.deleteInventory(inventory)
+        }
+    }
 
+    // Actualizar producto
+    fun updateInventory(inventory: Inventory) {
+        viewModelScope.launch {
+            repository.updateInventory(inventory)
+        }
+    }
 
+    // Obtener lista de inventario
+    fun getListInventory() {
+        viewModelScope.launch {
+            _progressState.value = true
+            try {
+                _listInventory.value = repository.getListInventory()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                _progressState.value = false
+            }
+        }
+    }
 }

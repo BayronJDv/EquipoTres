@@ -4,5 +4,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="mygray">#424242 </color>
     <color name="myorange">#FF5722</color>
+    <color name="naranja">#FA8523</color>
+    <color name="light_gray">#969393</color>
+
+
 
 </resources>
