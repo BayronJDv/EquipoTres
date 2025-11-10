@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.widgetappbeta.R
 import com.example.widgetappbeta.databinding.FragmentHomeBinding
+import com.example.widgetappbeta.sharedprefs.PrefsManager
 import com.example.widgetappbeta.view.adapter.InventoryAdapter
 import com.example.widgetappbeta.viewmodel.InventoryViewModel
 
@@ -48,8 +49,10 @@ class HomeFragment : Fragment(){
         binding.materialToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_logout -> {
-                    // aqui se debe implementar la logica de logout con viewmodel
                     Log.d("HomeFragment", "log out tocado  ")
+                    PrefsManager.setLoggedIn(false)
+                    findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
+
                     true // indica que el evento fue manejado
                 }
                 else -> false
@@ -83,9 +86,15 @@ class HomeFragment : Fragment(){
     }
 
     private fun observerProgress() {
-        inventoryViewModel.progresState.observe(viewLifecycleOwner){
+        inventoryViewModel.progressState.observe(viewLifecycleOwner){
             status -> binding.progressBar.isVisible = status
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        inventoryViewModel.getListInventory() // refresca lista al volver
+    }
+
 
 }

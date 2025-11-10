@@ -6,26 +6,36 @@ import com.example.widgetappbeta.model.Inventory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-
 class InventoryRepository(val context: Context) {
-    // dao para realizar operaciones en la base de datos
+
+    // DAO para realizar operaciones en la base de datos
     private val inventoryDao = InventoryDB.getDatabase(context).inventoryDao()
 
-
-
-
-    suspend fun saveInventory(inventory: Inventory){
-        withContext(Dispatchers.IO){
+    // Guardar producto
+    suspend fun saveInventory(inventory: Inventory) {
+        withContext(Dispatchers.IO) {
             inventoryDao.saveInventory(inventory)
         }
     }
 
-    suspend fun getListInventory(): MutableList<Inventory>{
-        return withContext(Dispatchers.IO){
+    // Obtener lista de productos
+    suspend fun getListInventory(): MutableList<Inventory> {
+        return withContext(Dispatchers.IO) {
             inventoryDao.getListInventory()
-
         }
     }
 
+    // Eliminar producto
+    suspend fun deleteInventory(inventory: Inventory) {
+        withContext(Dispatchers.IO) {
+            inventoryDao.deleteInventory(inventory)
+        }
+    }
 
+    // Actualizar producto
+    suspend fun updateInventory(inventory: Inventory) {
+        withContext(Dispatchers.IO) {
+            inventoryDao.updateInventory(inventory)
+        }
+    }
 }

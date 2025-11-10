@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mygray"
+        tools:context=".view.fragment.LoginFragment">
+
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/ivInventoryImage"
+            android:layout_width="347dp"
+            android:layout_height="310dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/tvInventoryTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/inventory" />
+
+        <TextView
+            android:id="@+id/tvInventoryTitle"
+            android:layout_width="370dp"
+            android:layout_height="112dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/lexend"
+            android:text="Inventory"
+            android:textAlignment="center"
+            android:textColor="@color/myorange"
+            android:textSize="60sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/lottieFingerprint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivInventoryImage"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieFingerprint"
+            android:layout_width="198dp"
+            android:layout_height="198dp"
+            android:layout_marginBottom="60dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvInventoryTitle"
+            app:layout_constraintVertical_bias="0.5"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/finger" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
