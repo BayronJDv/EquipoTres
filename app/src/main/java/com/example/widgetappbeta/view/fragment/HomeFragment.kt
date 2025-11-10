@@ -83,9 +83,15 @@ class HomeFragment : Fragment(){
     }
 
     private fun observerProgress() {
-        inventoryViewModel.progresState.observe(viewLifecycleOwner){
+        inventoryViewModel.progressState.observe(viewLifecycleOwner){
             status -> binding.progressBar.isVisible = status
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        inventoryViewModel.getListInventory() // refresca lista al volver
+    }
+
 
 }
