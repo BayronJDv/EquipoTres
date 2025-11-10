@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.widgetappbeta.model.Inventory
 import com.example.widgetappbeta.repository.InventoryRepository
+import com.example.widgetappbeta.sharedprefs.PrefsManager
 import kotlinx.coroutines.launch
 
 
@@ -43,5 +44,7 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
             }
         }
     }
+
+
 
 }

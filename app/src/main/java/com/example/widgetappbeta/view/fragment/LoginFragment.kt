@@ -9,16 +9,23 @@ import android.widget.Toast
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.widgetappbeta.R
 import com.example.widgetappbeta.databinding.FragmentLoginBinding
+import com.example.widgetappbeta.sharedprefs.PrefsManager
 import java.util.concurrent.Executor
+import com.example.widgetappbeta.viewmodel.LoginViewModel
+
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private lateinit var executor: Executor
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
+
+    // viewmodel
+    private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,9 +35,16 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
+
+    // si hay una sesion existente redirije al home
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (viewModel.verififySession()) {
 
+            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+
+            return
+        }
         setupBiometric()
         setupClickListeners()
     }
@@ -59,6 +73,7 @@ class LoginFragment : Fragment() {
                         "Autenticación exitosa",
                         Toast.LENGTH_SHORT
                     ).show()
+                    viewModel.onLoginSuccess()
                     findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                 }
 
