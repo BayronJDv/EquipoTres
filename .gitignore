@@ -7,9 +7,6 @@
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
-.idea/
-*.iws
-*.ipr
 .DS_Store
 /build
 /captures
