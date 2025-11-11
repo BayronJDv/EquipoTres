@@ -41,7 +41,8 @@ class EditFragment : Fragment() {
         producto = arguments?.getSerializable("productoEditar") as? Inventory
 
         producto?.let {
-            binding.etIdEdit.setText(it.id.toString())
+            binding.tvIdValue.text = it.id.toString()
+
             binding.etNombreEdit.setText(it.name)
             binding.etPrecioEdit.setText(it.price.toString())
             binding.etCantidadEdit.setText(it.quantity.toString())
@@ -101,9 +102,10 @@ class EditFragment : Fragment() {
         if (actualizado != null) {
             viewModel.updateInventory(actualizado)
             Toast.makeText(requireContext(), "Producto actualizado correctamente", Toast.LENGTH_SHORT).show()
-            findNavController().navigateUp()
+            findNavController().navigate(com.example.widgetappbeta.R.id.homeFragment)
         } else {
             Toast.makeText(requireContext(), "Error al actualizar el producto", Toast.LENGTH_SHORT).show()
         }
+
     }
 }
