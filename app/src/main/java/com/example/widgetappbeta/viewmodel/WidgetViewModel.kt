@@ -15,6 +15,7 @@ class WidgetViewModel(application: Application) : AndroidViewModel(application) 
     private val inventoryRepository = InventoryRepository(context)
 
     //devuelve el saldo en string
+    @SuppressLint("DefaultLocale")
     suspend fun obtenerSaldo(): String = withContext(Dispatchers.IO) {
         val inventario = inventoryRepository.getListInventory()
 
