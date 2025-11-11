@@ -1,5 +1,6 @@
 package com.example.widgetappbeta.view.viewholder
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.navigation.NavController
 import com.example.widgetappbeta.R
@@ -15,10 +16,11 @@ class InventoryViewHolder(binding: ItemInventoryBinding, navController: NavContr
         val bindingItem = binding
         val navController = navController
 
+        @SuppressLint("SetTextI18n", "DefaultLocale")
         fun setItemInventory(inventory: Inventory){
             bindingItem.tvName.text = inventory.name
             bindingItem.tvId.text = "id: ${inventory.id}"
-            bindingItem.tvPrice.text = "$${inventory.price}"
+            bindingItem.tvPrice.text = priceFormat(String.format("%.2f", inventory.price))
 
 
             // navegacion desde cada item al fragment details
@@ -29,6 +31,23 @@ class InventoryViewHolder(binding: ItemInventoryBinding, navController: NavContr
             }
 
         }
+
+    fun priceFormat(price: String): String {
+        val partes = price.split(".")
+        val entera = partes[0]
+        val decimal = partes[1]
+
+        val enteraReversed = entera.reversed()
+        val enteraConPuntos = StringBuilder()
+
+        //Mi poderosa funcion de Widget
+        for (i in enteraReversed.indices) {
+            if (i > 0 && i % 3 == 0) enteraConPuntos.append(".")
+            enteraConPuntos.append(enteraReversed[i])
+        }
+
+        return "$ ${enteraConPuntos.reverse()},$decimal"
+    }
 
 
 }
