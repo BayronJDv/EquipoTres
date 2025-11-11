@@ -2,11 +2,13 @@
 <resources>
     <color name="black">#323232</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="myblue">#FFFFFFFF</color>
     <color name="mygray">#424242 </color>
     <color name="myorange">#FF5722</color>
     <color name="naranja">#FA8523</color>
     <color name="light_gray">#969393</color>
-
-
-
+    <color name="WidgetBlack">#CC000000</color>
+    <color name="WidgetOrange">#e7522e</color>
+    <color name="WidgetOrangeIcon">#FA8523</color>
 </resources>

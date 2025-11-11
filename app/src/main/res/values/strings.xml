@@ -2,5 +2,8 @@
     <string name="app_name">Widgetappbeta</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="inventario">Inventario</string>
+    <string name="inventory">Inventory</string>
+    <string name="PreguntaWidget">¿Cuánto tengo de inventario?</string>
+    <string name="GestionWidget">Gestionar Inventario</string>
 
 </resources>
