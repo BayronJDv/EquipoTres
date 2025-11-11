@@ -71,13 +71,15 @@ class EditFragment : Fragment() {
     }
 
     private fun validarCampos() {
+        val id = binding.tvIdValue.text.toString().trim()
         val nombre = binding.etNombreEdit.text.toString().trim()
         val precio = binding.etPrecioEdit.text.toString().trim()
         val cantidad = binding.etCantidadEdit.text.toString().trim()
 
-        // El botón solo se habilita si todos los campos tienen texto
-        binding.btnGuardarCambios.isEnabled =
-            nombre.isNotEmpty() && precio.isNotEmpty() && cantidad.isNotEmpty()
+        val todosLlenos = id.isNotEmpty() && nombre.isNotEmpty() && precio.isNotEmpty() && cantidad.isNotEmpty()
+
+        binding.btnGuardarCambios.isEnabled = todosLlenos
+        binding.btnGuardarCambios.alpha = if (todosLlenos) 1f else 0.7f
     }
 
     private fun guardarCambios() {
