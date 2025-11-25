@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
     id("kotlin-kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -70,5 +71,10 @@ dependencies {
     implementation("androidx.biometric:biometric:1.1.0")
     implementation("com.airbnb.android:lottie:6.1.0")
 
+    // Firebase BOM
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    // Firebase Authentication
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
 
 }
