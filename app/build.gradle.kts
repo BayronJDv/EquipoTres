@@ -71,10 +71,10 @@ dependencies {
     implementation("androidx.biometric:biometric:1.1.0")
     implementation("com.airbnb.android:lottie:6.1.0")
 
-    // Firebase BOM
-    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+
     // Firebase Authentication
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
-
 }
