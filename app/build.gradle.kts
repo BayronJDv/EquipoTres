@@ -75,6 +75,6 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
 
     // Firebase Authentication
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-analytics")
 }
