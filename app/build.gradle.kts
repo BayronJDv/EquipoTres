@@ -3,11 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
     id("kotlin-kapt")
-<<<<<<< HEAD
     id ("com.google.dagger.hilt.android")
-=======
     id("com.google.gms.google-services")
->>>>>>> main
 }
 
 android {
