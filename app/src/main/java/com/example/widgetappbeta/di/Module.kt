@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.widgetappbeta.data.InventoryDB
 import com.example.widgetappbeta.data.InventoryDao
+import com.google.firebase.firestore.FirebaseFirestore
 
 import dagger.Module
 import dagger.Provides
@@ -16,6 +17,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object Module {
+
+    @Provides
+    @Singleton
+    fun provideFirestore(): FirebaseFirestore {
+        return FirebaseFirestore.getInstance()
+    }
 
     @Singleton
     @Provides

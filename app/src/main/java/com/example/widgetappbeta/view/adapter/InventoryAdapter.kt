@@ -6,9 +6,10 @@ import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.widgetappbeta.databinding.ItemInventoryBinding
 import com.example.widgetappbeta.model.Inventory
+import com.example.widgetappbeta.model.InventoryF
 import com.example.widgetappbeta.view.viewholder.InventoryViewHolder
 
-class InventoryAdapter(private val ListInventory: MutableList<Inventory>, private val navController: NavController)
+class InventoryAdapter(private val ListInventory: MutableList<InventoryF>, private val navController: NavController)
     : RecyclerView.Adapter<InventoryViewHolder>(){
 
     override fun onCreateViewHolder(

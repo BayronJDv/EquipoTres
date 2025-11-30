@@ -86,10 +86,11 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
     //dependecia corrutinas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
-    //dependencia biometria
-    implementation("androidx.biometric:biometric:1.1.0")
-    implementation("com.airbnb.android:lottie:6.1.0")
+//    //dependencia biometria
+//    implementation("androidx.biometric:biometric:1.1.0")
+//    implementation("com.airbnb.android:lottie:6.1.0")
 
     //dagger hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
@@ -100,4 +101,7 @@ dependencies {
     // Firebase Authentication
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-analytics")
+
+    //Firebase firestore
+    implementation("com.google.firebase:firebase-firestore")
 }

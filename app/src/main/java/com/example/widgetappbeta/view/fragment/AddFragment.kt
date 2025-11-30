@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.widgetappbeta.databinding.FragmentAddBinding
 import com.example.widgetappbeta.model.Inventory
+import com.example.widgetappbeta.model.InventoryF
 import com.example.widgetappbeta.repository.InventoryRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -82,30 +83,51 @@ class AddFragment : Fragment() {
     //Guardar el producto
     private fun configurarBotonGuardar() {
         binding.btnGuardar.setOnClickListener {
-            try {
-                val codigo = binding.etCodigo.text.toString().toInt()
-                val nombre = binding.etNombre.text.toString()
-                val precio = binding.etPrecio.text.toString().toDouble()
-                val cantidad = binding.etCantidad.text.toString().toInt()
+            // Validaciones de UI (EditTexts vacíos, etc.)
+            val codigoStr = binding.etCodigo.text.toString()
+            val nombre = binding.etNombre.text.toString()
+            val precioStr = binding.etPrecio.text.toString()
+            val cantidadStr = binding.etCantidad.text.toString()
 
-                val nuevoItem = Inventory(
-                    id = codigo,
+            if (codigoStr.isEmpty() || nombre.isEmpty() || precioStr.isEmpty() || cantidadStr.isEmpty()) {
+                Toast.makeText(requireContext(), "Faltan datos", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            try {
+                val nuevoItem = InventoryF(
+                    id = codigoStr.toInt(),
                     name = nombre,
-                    price = precio,
-                    quantity = cantidad
+                    price = precioStr.toDouble(),
+                    quantity = cantidadStr.toInt()
                 )
 
+                // AQUI ESTA EL CAMBIO IMPORTANTE:
+                // Usamos lifecycleScope para lanzar una corrutina desde el Fragment
                 lifecycleScope.launch {
+                    // Deshabilitamos el botón para evitar doble clic
+                    binding.btnGuardar.isEnabled = false
+
                     try {
+                        // 1. Llamamos y ESPERAMOS (suspend)
                         inventoryViewModel.saveInventory(nuevoItem)
-                        Toast.makeText(requireContext(), "Producto agregado correctamente", Toast.LENGTH_SHORT).show()
-                        findNavController().navigateUp() // volver al Home
+
+                        // 2. Si llegamos aquí, es que NO hubo error y Firestore terminó
+                        Toast.makeText(requireContext(), "Guardado exitoso", Toast.LENGTH_SHORT).show()
+
+                        // 3. AHORA sí podemos irnos
+                        findNavController().navigateUp()
+
                     } catch (e: Exception) {
-                        Toast.makeText(requireContext(), "Error al insertar: ${e.message}", Toast.LENGTH_LONG).show()
+                        // 4. Si falla Firestore (ej. ID duplicado), caemos aquí
+                        // La pantalla NO se cierra, permitiendo al usuario corregir el ID
+                        Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                        binding.btnGuardar.isEnabled = true // Reactivamos el botón
                     }
                 }
+
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Datos inválidos: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Datos inválidos en el formulario", Toast.LENGTH_SHORT).show()
             }
         }
     }

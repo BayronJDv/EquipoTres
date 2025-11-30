@@ -2,6 +2,7 @@ package com.example.widgetappbeta.viewmodel
 
 import androidx.lifecycle.*
 import com.example.widgetappbeta.model.Inventory
+import com.example.widgetappbeta.model.InventoryF
 import com.example.widgetappbeta.repository.InventoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -45,7 +46,7 @@ class AddViewModel @Inject constructor(
             return
         }
 
-        val nuevoItem = Inventory(id = cod, name = nom, price = pre, quantity = cant)
+        val nuevoItem = InventoryF(id = cod, name = nom, price = pre, quantity = cant)
 
         viewModelScope.launch {
             try {
