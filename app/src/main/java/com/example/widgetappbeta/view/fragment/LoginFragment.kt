@@ -2,6 +2,7 @@ package com.example.widgetappbeta.view.fragment
 
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
@@ -43,6 +44,9 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupUI() {
+        // Configurar filtros de entrada
+        setupInputFilters()
+
         // Configurar visibilidad de contraseña
         setupPasswordVisibility()
 
@@ -62,6 +66,14 @@ class LoginFragment : Fragment() {
             val password = binding.etPassword.text.toString().trim()
             viewModel.register(email, password)
         }
+    }
+
+    private fun setupInputFilters() {
+        // Limitar Email a 40 caracteres
+        binding.etEmail.filters = arrayOf(InputFilter.LengthFilter(40))
+
+        // Limitar Password a 10 dígitos
+        binding.etPassword.filters = arrayOf(InputFilter.LengthFilter(10))
     }
 
     private fun setupPasswordVisibility() {
