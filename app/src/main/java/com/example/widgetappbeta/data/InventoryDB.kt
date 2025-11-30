@@ -16,13 +16,4 @@ abstract class InventoryDB : RoomDatabase() {
 
     abstract fun inventoryDao(): InventoryDao
 
-    companion object {
-        fun getDatabase(context: Context): InventoryDB {
-            return Room.databaseBuilder(
-                context.applicationContext,
-                InventoryDB::class.java,
-                "inventory_db"
-            ).build()
-        }
-    }
 }

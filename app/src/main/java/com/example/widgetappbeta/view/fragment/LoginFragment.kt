@@ -15,7 +15,10 @@ import androidx.navigation.fragment.findNavController
 import com.example.widgetappbeta.R
 import com.example.widgetappbeta.databinding.FragmentLoginBinding
 import com.example.widgetappbeta.viewmodel.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private val viewModel: LoginViewModel by viewModels()

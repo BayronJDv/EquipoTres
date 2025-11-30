@@ -15,8 +15,9 @@ import com.example.widgetappbeta.databinding.FragmentHomeBinding
 import com.example.widgetappbeta.sharedprefs.PrefsManager
 import com.example.widgetappbeta.view.adapter.InventoryAdapter
 import com.example.widgetappbeta.viewmodel.InventoryViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class HomeFragment : Fragment(){
     private lateinit var binding: FragmentHomeBinding
     private val inventoryViewModel: InventoryViewModel by viewModels()

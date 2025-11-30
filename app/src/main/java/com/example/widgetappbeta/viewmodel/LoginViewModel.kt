@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.widgetappbeta.sharedprefs.PrefsManager
+import dagger.hilt.android.lifecycle.HiltViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 data class LoginState(

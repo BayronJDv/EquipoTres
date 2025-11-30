@@ -2,10 +2,17 @@ package com.example.widgetappbeta.viewmodel
 
 import androidx.lifecycle.*
 import com.example.widgetappbeta.model.Inventory
+import com.example.widgetappbeta.model.InventoryF
 import com.example.widgetappbeta.repository.InventoryRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AddViewModel(private val repository: InventoryRepository) : ViewModel() {
+
+@HiltViewModel
+class AddViewModel @Inject constructor(
+    private val repository: InventoryRepository
+) : ViewModel() {
 
     val codigo = MutableLiveData<String>()
     val nombre = MutableLiveData<String>()
@@ -39,7 +46,7 @@ class AddViewModel(private val repository: InventoryRepository) : ViewModel() {
             return
         }
 
-        val nuevoItem = Inventory(id = cod, name = nom, price = pre, quantity = cant)
+        val nuevoItem = InventoryF(id = cod, name = nom, price = pre, quantity = cant)
 
         viewModelScope.launch {
             try {
