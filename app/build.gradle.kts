@@ -3,7 +3,11 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
     id("kotlin-kapt")
+<<<<<<< HEAD
     id ("com.google.dagger.hilt.android")
+=======
+    id("com.google.gms.google-services")
+>>>>>>> main
 }
 
 android {
@@ -74,5 +78,10 @@ dependencies {
     //dagger hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
     ksp("com.google.dagger:hilt-android-compiler:2.51.1")
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
 
+    // Firebase Authentication
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-analytics")
 }
