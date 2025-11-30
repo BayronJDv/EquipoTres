@@ -16,8 +16,9 @@ import com.example.widgetappbeta.databinding.FragmentLoginBinding
 import com.example.widgetappbeta.sharedprefs.PrefsManager
 import java.util.concurrent.Executor
 import com.example.widgetappbeta.viewmodel.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private lateinit var executor: Executor

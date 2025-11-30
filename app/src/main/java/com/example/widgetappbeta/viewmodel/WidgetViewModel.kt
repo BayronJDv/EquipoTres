@@ -3,16 +3,19 @@ package com.example.widgetappbeta.viewmodel
 import android.annotation.SuppressLint
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.example.widgetappbeta.model.Inventory
 import com.example.widgetappbeta.repository.InventoryRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class WidgetViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val context = getApplication<Application>()
-
-    private val inventoryRepository = InventoryRepository(context)
+@HiltViewModel
+class WidgetViewModel @Inject constructor(
+    private val inventoryRepository: InventoryRepository
+) : ViewModel() { // <-- Ya no hereda de AndroidViewModel
 
     //devuelve el saldo en string
     @SuppressLint("DefaultLocale")

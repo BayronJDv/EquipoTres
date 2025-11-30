@@ -13,7 +13,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.widgetappbeta.databinding.FragmentEditBinding
 import com.example.widgetappbeta.model.Inventory
 import com.example.widgetappbeta.viewmodel.InventoryViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class EditFragment : Fragment() {
 
     private lateinit var binding: FragmentEditBinding

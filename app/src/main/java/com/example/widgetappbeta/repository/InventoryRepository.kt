@@ -2,14 +2,15 @@ package com.example.widgetappbeta.repository
 
 import android.content.Context
 import com.example.widgetappbeta.data.InventoryDB
+import com.example.widgetappbeta.data.InventoryDao
 import com.example.widgetappbeta.model.Inventory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class InventoryRepository(val context: Context) {
-
-    // DAO para realizar operaciones en la base de datos
-    private val inventoryDao = InventoryDB.getDatabase(context).inventoryDao()
+class InventoryRepository  @Inject constructor(
+    private val inventoryDao: InventoryDao
+){
 
     // Guardar producto
     suspend fun saveInventory(inventory: Inventory) {

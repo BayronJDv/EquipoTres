@@ -8,20 +8,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.widgetappbeta.databinding.FragmentAddBinding
 import com.example.widgetappbeta.model.Inventory
 import com.example.widgetappbeta.repository.InventoryRepository
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import com.example.widgetappbeta.viewmodel.InventoryViewModel
 
+
+@AndroidEntryPoint
 class AddFragment : Fragment() {
 
     private lateinit var binding: FragmentAddBinding
+    private val inventoryViewModel: InventoryViewModel by viewModels()
 
-    private val repository: InventoryRepository by lazy {
-        InventoryRepository(requireContext())
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -94,7 +97,7 @@ class AddFragment : Fragment() {
 
                 lifecycleScope.launch {
                     try {
-                        repository.saveInventory(nuevoItem)
+                        inventoryViewModel.saveInventory(nuevoItem)
                         Toast.makeText(requireContext(), "Producto agregado correctamente", Toast.LENGTH_SHORT).show()
                         findNavController().navigateUp() // volver al Home
                     } catch (e: Exception) {

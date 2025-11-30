@@ -2,6 +2,7 @@ package com.example.widgetappbeta.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.widgetappbeta.sharedprefs.PrefsManager
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 class LoginViewModel : ViewModel() {
 

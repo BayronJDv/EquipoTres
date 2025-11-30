@@ -12,10 +12,12 @@ import com.example.widgetappbeta.databinding.FragmentDetailBinding
 import com.example.widgetappbeta.model.Inventory
 import com.example.widgetappbeta.viewmodel.InventoryViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.*
 
+@AndroidEntryPoint
 class DetailFragment : Fragment() {
 
     private lateinit var binding: FragmentDetailBinding
