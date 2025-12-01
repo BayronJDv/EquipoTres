@@ -18,15 +18,16 @@ import com.example.widgetappbeta.viewmodel.InventoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(){
+class HomeFragment : Fragment() {
+
     private lateinit var binding: FragmentHomeBinding
     private val inventoryViewModel: InventoryViewModel by viewModels()
-
+    private lateinit var adapter: InventoryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle?,
+    ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         return binding.root
@@ -35,67 +36,55 @@ class HomeFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //configurar el toolbar
         setupToolbar()
-        // agragando evento al boton +
         setupFloatingButton()
-        //observador del viewmodel
-        observadorViewModel()
+        setupRecyclerView()
+        setupObservers()
 
-
+        inventoryViewModel.getListInventory() // Cargar Firestore
     }
 
     private fun setupToolbar() {
-        // Escuchar clicks del menú del toolbar
         binding.materialToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_logout -> {
-                    Log.d("HomeFragment", "log out tocado  ")
+                    Log.d("HomeFragment", "Logout tocado")
                     PrefsManager.setLoggedIn(false)
                     findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
-
-                    true // indica que el evento fue manejado
+                    true
                 }
                 else -> false
             }
         }
     }
-    private fun setupFloatingButton(){
+
+    private fun setupFloatingButton() {
         binding.floatingActionButton.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_addFragment)
         }
     }
 
+    private fun setupRecyclerView() {
+        adapter = InventoryAdapter(mutableListOf(), findNavController())
 
-    private fun observadorViewModel(){
-        observerListInventory()
-        observerProgress()
-    }
-
-    private fun observerListInventory() {
-        inventoryViewModel.getListInventory()
-        inventoryViewModel.listInventory.observe(viewLifecycleOwner){
-            listInventory ->
-            val recycler = binding.recyclerview
-            val layoutManager = LinearLayoutManager(context)
-            recycler.layoutManager = layoutManager
-            val adapter = InventoryAdapter(listInventory, findNavController())
-            recycler.adapter = adapter
-            adapter.notifyDataSetChanged()
-
+        binding.recyclerview.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = this@HomeFragment.adapter
         }
     }
 
-    private fun observerProgress() {
-        inventoryViewModel.progressState.observe(viewLifecycleOwner){
-            status -> binding.progressBar.isVisible = status
+    private fun setupObservers() {
+        inventoryViewModel.listInventory.observe(viewLifecycleOwner) { list ->
+            adapter.updateList(list)  // método nuevo en tu adapter
+        }
+
+        inventoryViewModel.progressState.observe(viewLifecycleOwner) { loading ->
+            binding.progressBar.isVisible = loading
         }
     }
 
     override fun onResume() {
         super.onResume()
-        inventoryViewModel.getListInventory() // refresca lista al volver
+        inventoryViewModel.getListInventory() // refrescar datos al volver
     }
-
-
 }

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.widgetappbeta.BR.viewModel
 import com.example.widgetappbeta.databinding.FragmentAddBinding
 import com.example.widgetappbeta.model.Inventory
 import com.example.widgetappbeta.model.InventoryF
@@ -26,7 +27,6 @@ class AddFragment : Fragment() {
     private lateinit var binding: FragmentAddBinding
     private val inventoryViewModel: InventoryViewModel by viewModels()
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,98 +38,72 @@ class AddFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Flecha atras del toolbar
-        val navIcon = binding.toolbarAdd.navigationIcon
-        navIcon?.setTint(resources.getColor(android.R.color.white, null))
-        binding.toolbarAdd.navigationIcon = navIcon
-
+        // Botón atrás en el Toolbar
         binding.toolbarAdd.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
 
         configurarValidacionCampos()
-        configurarBotonGuardar()
 
-        // Desactiva botón guardar
-        binding.btnGuardar.isEnabled = false
-        binding.btnGuardar.alpha = 0.5f
+        binding.btnGuardar.setOnClickListener {
+            guardarProducto()
+        }
     }
 
-    // Habilita el botón guardar solo cuando todos los campos tengan texto
     private fun configurarValidacionCampos() {
-        val textWatcher = object : TextWatcher {
+        val watcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.btnGuardar.isEnabled = camposCompletos()
-                // Cambia la opacdad
-                binding.btnGuardar.alpha = if (binding.btnGuardar.isEnabled) 1f else 0.5f
+                binding.btnGuardar.alpha = if (camposCompletos()) 1f else 0.5f
             }
             override fun afterTextChanged(s: Editable?) {}
         }
 
-        binding.etCodigo.addTextChangedListener(textWatcher)
-        binding.etNombre.addTextChangedListener(textWatcher)
-        binding.etPrecio.addTextChangedListener(textWatcher)
-        binding.etCantidad.addTextChangedListener(textWatcher)
+        binding.etCodigo.addTextChangedListener(watcher)
+        binding.etNombre.addTextChangedListener(watcher)
+        binding.etPrecio.addTextChangedListener(watcher)
+        binding.etCantidad.addTextChangedListener(watcher)
     }
 
     private fun camposCompletos(): Boolean {
-        return binding.etCodigo.text?.isNotEmpty() == true &&
-                binding.etNombre.text?.isNotEmpty() == true &&
-                binding.etPrecio.text?.isNotEmpty() == true &&
-                binding.etCantidad.text?.isNotEmpty() == true
+        return binding.etCodigo.text!!.isNotEmpty() &&
+                binding.etNombre.text!!.isNotEmpty() &&
+                binding.etPrecio.text!!.isNotEmpty() &&
+                binding.etCantidad.text!!.isNotEmpty()
     }
 
-    //Guardar el producto
-    private fun configurarBotonGuardar() {
-        binding.btnGuardar.setOnClickListener {
-            // Validaciones de UI (EditTexts vacíos, etc.)
-            val codigoStr = binding.etCodigo.text.toString()
-            val nombre = binding.etNombre.text.toString()
-            val precioStr = binding.etPrecio.text.toString()
-            val cantidadStr = binding.etCantidad.text.toString()
+    private fun guardarProducto() {
 
-            if (codigoStr.isEmpty() || nombre.isEmpty() || precioStr.isEmpty() || cantidadStr.isEmpty()) {
-                Toast.makeText(requireContext(), "Faltan datos", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+        val id = binding.etCodigo.text.toString().toIntOrNull()
+        val nombre = binding.etNombre.text.toString().trim()
+        val precio = binding.etPrecio.text.toString().toDoubleOrNull()
+        val cantidad = binding.etCantidad.text.toString().toIntOrNull()
 
-            try {
-                val nuevoItem = InventoryF(
-                    id = codigoStr.toInt(),
-                    name = nombre,
-                    price = precioStr.toDouble(),
-                    quantity = cantidadStr.toInt()
-                )
+        if (id == null || precio == null || cantidad == null || nombre.isEmpty()) {
+            Toast.makeText(requireContext(), "Datos inválidos", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-                // AQUI ESTA EL CAMBIO IMPORTANTE:
-                // Usamos lifecycleScope para lanzar una corrutina desde el Fragment
-                lifecycleScope.launch {
-                    // Deshabilitamos el botón para evitar doble clic
-                    binding.btnGuardar.isEnabled = false
+        val nuevo = InventoryF(
+            id = id,
+            name = nombre,
+            price = precio,
+            quantity = cantidad
+        )
 
-                    try {
-                        // 1. Llamamos y ESPERAMOS (suspend)
-                        inventoryViewModel.saveInventory(nuevoItem)
+        // Desactivar botón para evitar doble click
+        binding.btnGuardar.isEnabled = false
 
-                        // 2. Si llegamos aquí, es que NO hubo error y Firestore terminó
-                        Toast.makeText(requireContext(), "Guardado exitoso", Toast.LENGTH_SHORT).show()
-
-                        // 3. AHORA sí podemos irnos
-                        findNavController().navigateUp()
-
-                    } catch (e: Exception) {
-                        // 4. Si falla Firestore (ej. ID duplicado), caemos aquí
-                        // La pantalla NO se cierra, permitiendo al usuario corregir el ID
-                        Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_LONG).show()
-                        binding.btnGuardar.isEnabled = true // Reactivamos el botón
-                    }
-                }
-
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Datos inválidos en el formulario", Toast.LENGTH_SHORT).show()
+        // Llamada correcta al ViewModel
+        inventoryViewModel.saveInventory(nuevo) { success, message ->
+            if (success) {
+                Toast.makeText(requireContext(), "Producto guardado", Toast.LENGTH_SHORT).show()
+                findNavController().navigateUp()
+            } else {
+                Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_LONG).show()
+                binding.btnGuardar.isEnabled = true
             }
         }
     }
-
 }
