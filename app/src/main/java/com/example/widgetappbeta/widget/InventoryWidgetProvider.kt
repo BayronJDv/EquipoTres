@@ -28,19 +28,9 @@ class InventoryWidgetProvider : AppWidgetProvider() {
     companion object {
 
         const val ACTION_WIDGET_CLICK = "com.example.widgetappbeta.WIDGET_BUTTON_CLICK"
-
-        // ELIMINAR: ACTION_LOGIN_SUCCESS ya no se usa
-        // const val ACTION_LOGIN_SUCCESS = "com.example.widgetappbeta.LOGIN_SUCCESS"
-
         const val EXTRA_BUTTON_ID = "com.example.widgetappbeta.EXTRA_BUTTON_ID"
         const val BUTTON_TOGGLE_SALDO = 1
         const val BUTTON_MANAGE_INVENTORY = 2
-
-        // ELIMINAR: Ya no se usan estas constantes
-        // const val EXTRA_REDIRECT_AFTER_LOGIN = "com.example.widgetappbeta.REDIRECT_AFTER_LOGIN"
-        // const val REDIRECT_TO_WIDGET_REFRESH = "WIDGET_REFRESH"
-        // const val REDIRECT_TO_MAIN_ACTIVITY = "MAIN_ACTIVITY"
-
         const val EXTRA_WIDGET_REQUEST = "com.example.widgetappbeta.WIDGET_REQUEST"
 
         // Usar AtomicBoolean para evitar condiciones de carrera
@@ -123,7 +113,6 @@ class InventoryWidgetProvider : AppWidgetProvider() {
 
 
                 if (isLoggedIn) {
-                    // Usuario YA logueado - ejecutar acción directamente
                     widgetScope.launch {
                         val manager = AppWidgetManager.getInstance(context)
                         val widgetIds = manager.getAppWidgetIds(

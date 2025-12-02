@@ -61,6 +61,15 @@ class MainActivity : AppCompatActivity() {
         executeWidgetAction(buttonIdFromWidget)
     }
 
+    fun onLoginSuccess() {
+        val widgetRequest = intent.getBooleanExtra(InventoryWidgetProvider.EXTRA_WIDGET_REQUEST, false)
+        if (widgetRequest) {
+            executeWidgetAction(buttonIdFromWidget)
+        } else {
+            navigateToHomeFragment()
+        }
+    }
+
     private fun executeWidgetAction(buttonId: Int) {
 
         when (buttonId) {

@@ -55,27 +55,18 @@ class LoginFragment : Fragment() {
             -1
         )
 
-        Log.d("LoginFragment", "Widget request: $widgetRequest, Button ID: $buttonIdFromWidget")
-
         handleExistingSession()
     }
 
     private fun handleExistingSession() {
         if (viewModel.verififySession()) {
-            Log.d("LoginFragment", "Sesión ya verificada, manejando redirección...")
 
             if (widgetRequest) {
                 handler.post {
                     val mainActivity = requireActivity() as? MainActivity
-                    if (mainActivity != null) {
-                        Log.d("LoginFragment", "Ya logueado + widget request, notificando MainActivity")
-                        mainActivity.onWidgetLoginSuccess()
-                    } else {
-                        Log.e("LoginFragment", "MainActivity no disponible")
-                    }
+                    mainActivity?.onWidgetLoginSuccess()
                 }
             } else {
-                Log.d("LoginFragment", "Ya logueado + NO widget request, yendo a home")
                 navigateToHome()
             }
         } else {
@@ -198,18 +189,10 @@ class LoginFragment : Fragment() {
             }
 
             if (state.isSuccess) {
-                Log.d("LoginFragment", "Login exitoso, widgetRequest: $widgetRequest")
-
-                if (widgetRequest) {
-                    // Si es request del widget, notificar a MainActivity
-                    val mainActivity = requireActivity() as? MainActivity
-                    if (mainActivity != null) {
-                        mainActivity.onWidgetLoginSuccess()
-                    } else {
-                        Log.e("LoginFragment", "MainActivity no disponible después del login")
-                    }
+                val mainActivity = requireActivity() as? MainActivity
+                if (mainActivity != null) {
+                    mainActivity.onLoginSuccess()
                 } else {
-                    // Flujo normal
                     navigateToHome()
                 }
             }
