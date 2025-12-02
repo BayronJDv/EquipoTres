@@ -5,8 +5,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import com.example.widgetappbeta.view.MainActivity  // Cambiado de LoginActivity a MainActivity
+import com.example.widgetappbeta.view.MainActivity
 import com.example.widgetappbeta.repository.InventoryRepository
 import com.example.widgetappbeta.sharedprefs.PrefsManager
 import com.example.widgetappbeta.view.widget.WidgetView
@@ -104,7 +103,6 @@ class InventoryWidgetProvider : AppWidgetProvider() {
                 try {
                     actualizarWidget(context, manager, id)
                 } catch (e: Exception) {
-                    Log.e("InventoryWidget", "Error en onUpdate para widget $id: ${e.message}")
                 }
             }
         }
@@ -113,20 +111,16 @@ class InventoryWidgetProvider : AppWidgetProvider() {
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
 
-        Log.d("InventoryWidget", "onReceive llamado con acción: ${intent.action}")
-
         PrefsManager.init(context)
 
         when (intent.action) {
             ACTION_WIDGET_CLICK -> {
                 val buttonId = intent.getIntExtra(EXTRA_BUTTON_ID, -1)
-                Log.d("InventoryWidget", "Widget click, botón ID: $buttonId")
 
                 val prefs = PrefsManager
                 val auth = FirebaseAuth.getInstance()
                 val isLoggedIn = prefs.isLoggedIn() && auth.currentUser != null
 
-                Log.d("InventoryWidget", "Usuario logueado: $isLoggedIn")
 
                 if (isLoggedIn) {
                     // Usuario YA logueado - ejecutar acción directamente
@@ -138,20 +132,11 @@ class InventoryWidgetProvider : AppWidgetProvider() {
                         handleLoggedInActions(context, manager, widgetIds, buttonId)
                     }
                 } else {
-                    // Usuario NO logueado - abrir MainActivity para login
                     handleNotLoggedInActions(context, buttonId)
                 }
             }
 
-            // ELIMINAR: Ya no manejamos ACTION_LOGIN_SUCCESS aquí
-            /*
-            ACTION_LOGIN_SUCCESS -> {
-                // Esto ahora lo maneja MainActivity directamente
-            }
-            */
-
             AppWidgetManager.ACTION_APPWIDGET_UPDATE -> {
-                Log.d("InventoryWidget", "Actualización de widget solicitada")
                 widgetScope.launch {
                     val manager = AppWidgetManager.getInstance(context)
                     val widgetIds = manager.getAppWidgetIds(
@@ -161,7 +146,6 @@ class InventoryWidgetProvider : AppWidgetProvider() {
                         try {
                             actualizarWidget(context, manager, id)
                         } catch (e: Exception) {
-                            Log.e("InventoryWidget", "Error actualizando widget $id: ${e.message}")
                         }
                     }
                 }
@@ -177,21 +161,16 @@ class InventoryWidgetProvider : AppWidgetProvider() {
     ) {
         when (buttonId) {
             BUTTON_TOGGLE_SALDO -> {
-                // Alternar visibilidad del saldo
                 val newValue = !saldoVisible.get()
                 saldoVisible.set(newValue)
 
-                Log.d("InventoryWidget", "Alternando saldo a: $newValue")
 
                 ids.forEach { id ->
                     actualizarWidget(context, manager, id)
                 }
-                // NO abrimos MainActivity para TOGGLE_SALDO
             }
 
             BUTTON_MANAGE_INVENTORY -> {
-                // Solo para MANAGE_INVENTORY abrimos MainActivity
-                Log.d("InventoryWidget", "Abriendo MainActivity para MANAGE_INVENTORY")
                 withContext(Dispatchers.Main) {
                     Intent(context, MainActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -203,7 +182,6 @@ class InventoryWidgetProvider : AppWidgetProvider() {
     }
 
     private fun handleNotLoggedInActions(context: Context, buttonId: Int) {
-        Log.d("InventoryWidget", "Usuario no logueado, abriendo MainActivity para login")
         val loginIntent = createLoginIntent(context, buttonId)
         context.startActivity(loginIntent)
     }

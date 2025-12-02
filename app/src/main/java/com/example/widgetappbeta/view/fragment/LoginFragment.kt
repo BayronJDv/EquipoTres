@@ -43,7 +43,6 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Verificar si MainActivity recibió intent del widget
         val activity = requireActivity()
         val activityIntent = activity.intent
 
@@ -58,7 +57,6 @@ class LoginFragment : Fragment() {
 
         Log.d("LoginFragment", "Widget request: $widgetRequest, Button ID: $buttonIdFromWidget")
 
-        // Manejar sesión existente
         handleExistingSession()
     }
 
@@ -67,8 +65,6 @@ class LoginFragment : Fragment() {
             Log.d("LoginFragment", "Sesión ya verificada, manejando redirección...")
 
             if (widgetRequest) {
-                // Si ya está logueado Y es widget request, notificar a MainActivity
-                // Usar post para asegurar que MainActivity esté listo
                 handler.post {
                     val mainActivity = requireActivity() as? MainActivity
                     if (mainActivity != null) {
@@ -79,12 +75,10 @@ class LoginFragment : Fragment() {
                     }
                 }
             } else {
-                // Si ya está logueado pero NO es widget request, ir a home
                 Log.d("LoginFragment", "Ya logueado + NO widget request, yendo a home")
                 navigateToHome()
             }
         } else {
-            // Si NO está logueado, mostrar UI de login
             setupUI()
             observeViewModel()
         }

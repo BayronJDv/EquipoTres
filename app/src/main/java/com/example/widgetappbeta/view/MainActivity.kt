@@ -2,7 +2,6 @@ package com.example.widgetappbeta.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
@@ -21,14 +20,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // INICIALIZAR PrefsManager PRIMERO, antes de cualquier otra cosa
         PrefsManager.init(applicationContext)
 
-        Log.d("MainActivity", "PrefsManager inicializado")
 
         setContentView(R.layout.activity_main)
 
-        // Manejar intent del widget
         handleWidgetIntent(intent)
     }
 
@@ -48,8 +44,6 @@ class MainActivity : AppCompatActivity() {
             -1
         )
 
-        Log.d("MainActivity", "Widget request: $widgetRequest, Button ID: $buttonIdFromWidget")
-
         if (widgetRequest) {
             handleWidgetRequest()
         }
@@ -58,22 +52,16 @@ class MainActivity : AppCompatActivity() {
     private fun handleWidgetRequest() {
         when {
             viewModel.verififySession() -> {
-                Log.d("MainActivity", "Usuario YA logueado, ejecutando acción del widget")
                 executeWidgetAction(buttonIdFromWidget)
-            }
-            else -> {
-                Log.d("MainActivity", "Usuario NO logueado, se manejará desde LoginFragment")
             }
         }
     }
 
     fun onWidgetLoginSuccess() {
-        Log.d("MainActivity", "onWidgetLoginSuccess llamado con buttonId: $buttonIdFromWidget")
         executeWidgetAction(buttonIdFromWidget)
     }
 
     private fun executeWidgetAction(buttonId: Int) {
-        Log.d("MainActivity", "Ejecutando acción del widget para botón ID: $buttonId")
 
         when (buttonId) {
             InventoryWidgetProvider.BUTTON_MANAGE_INVENTORY -> {
@@ -83,14 +71,12 @@ class MainActivity : AppCompatActivity() {
                 toggleSaldoAndReturnHome()
             }
             else -> {
-                Log.w("MainActivity", "ID de botón de widget desconocido: $buttonId")
                 navigateToHomeFragment()
             }
         }
     }
 
     private fun navigateToHomeFragment() {
-        Log.d("MainActivity", "Navegando a HomeFragment")
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragmentContainerView) as? NavHostFragment
@@ -99,7 +85,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun toggleSaldoAndReturnHome() {
-        Log.d("MainActivity", "Alternando saldo y volviendo al escritorio")
 
         val widgetIntent = Intent(InventoryWidgetProvider.ACTION_WIDGET_CLICK).apply {
             putExtra(InventoryWidgetProvider.EXTRA_BUTTON_ID,
@@ -112,7 +97,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun returnToHomeScreen() {
-        Log.d("MainActivity", "Volviendo al escritorio")
         val homeIntent = Intent(Intent.ACTION_MAIN).apply {
             addCategory(Intent.CATEGORY_HOME)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
