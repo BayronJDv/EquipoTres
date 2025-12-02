@@ -2,14 +2,15 @@ package com.example.widgetappbeta.view.fragment
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.widgetappbeta.model.InventoryF
 import com.example.widgetappbeta.R
 import com.example.widgetappbeta.databinding.FragmentHomeBinding
 import com.example.widgetappbeta.sharedprefs.PrefsManager
@@ -20,16 +21,19 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
-    private lateinit var binding: FragmentHomeBinding
-    private val inventoryViewModel: InventoryViewModel by viewModels()
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel: InventoryViewModel by viewModels()
     private lateinit var adapter: InventoryAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -41,7 +45,8 @@ class HomeFragment : Fragment() {
         setupRecyclerView()
         setupObservers()
 
-        inventoryViewModel.getListInventory() // Cargar Firestore
+        // ✅ Cargar lista inicial
+        viewModel.getListInventory()
     }
 
     private fun setupToolbar() {
@@ -49,13 +54,17 @@ class HomeFragment : Fragment() {
             when (menuItem.itemId) {
                 R.id.action_logout -> {
                     Log.d("HomeFragment", "Logout tocado")
-                    PrefsManager.setLoggedIn(false)
-                    findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
+                    handleLogout()
                     true
                 }
                 else -> false
             }
         }
+    }
+
+    private fun handleLogout() {
+        PrefsManager.setLoggedIn(false)
+        findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
     }
 
     private fun setupFloatingButton() {
@@ -74,17 +83,30 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        inventoryViewModel.listInventory.observe(viewLifecycleOwner) { list ->
-            adapter.updateList(list)  // método nuevo en tu adapter
+        // Observar cambios en la lista
+        viewModel.listInventory.observe(viewLifecycleOwner) { list ->
+            updateUIWithList(list)
         }
 
-        inventoryViewModel.progressState.observe(viewLifecycleOwner) { loading ->
-            binding.progressBar.isVisible = loading
+        // Observar estado de carga
+        viewModel.progressState.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.isVisible = isLoading
+
+            binding.floatingActionButton.isEnabled = !isLoading
         }
+    }
+
+    private fun updateUIWithList(list: MutableList<InventoryF>) {
+        adapter.updateList(list)
     }
 
     override fun onResume() {
         super.onResume()
-        inventoryViewModel.getListInventory() // refrescar datos al volver
+        viewModel.getListInventory()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
