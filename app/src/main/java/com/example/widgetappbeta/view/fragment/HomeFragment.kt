@@ -16,6 +16,7 @@ import com.example.widgetappbeta.databinding.FragmentHomeBinding
 import com.example.widgetappbeta.sharedprefs.PrefsManager
 import com.example.widgetappbeta.view.adapter.InventoryAdapter
 import com.example.widgetappbeta.viewmodel.InventoryViewModel
+import com.example.widgetappbeta.widget.InventoryWidgetProvider
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -64,6 +65,9 @@ class HomeFragment : Fragment() {
 
     private fun handleLogout() {
         PrefsManager.setLoggedIn(false)
+        requireContext().applicationContext?.let { context ->
+            InventoryWidgetProvider.sendLogoutResetBroadcast(context)
+        }
         findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
     }
 
