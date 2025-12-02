@@ -5,6 +5,9 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,15 +18,19 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.widgetappbeta.R
 import com.example.widgetappbeta.databinding.FragmentLoginBinding
+import com.example.widgetappbeta.view.MainActivity
 import com.example.widgetappbeta.viewmodel.LoginViewModel
+import com.example.widgetappbeta.widget.InventoryWidgetProvider
 import dagger.hilt.android.AndroidEntryPoint
-
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private val viewModel: LoginViewModel by viewModels()
     private var isPasswordVisible = false
+    private var widgetRequest = false
+    private var buttonIdFromWidget = -1
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,14 +43,51 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Si hay sesión activa, ir a Home
-        if (viewModel.verififySession()) {
-            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-            return
-        }
+        // Verificar si MainActivity recibió intent del widget
+        val activity = requireActivity()
+        val activityIntent = activity.intent
 
-        setupUI()
-        observeViewModel()
+        widgetRequest = activityIntent.getBooleanExtra(
+            InventoryWidgetProvider.EXTRA_WIDGET_REQUEST,
+            false
+        )
+        buttonIdFromWidget = activityIntent.getIntExtra(
+            InventoryWidgetProvider.EXTRA_BUTTON_ID,
+            -1
+        )
+
+        Log.d("LoginFragment", "Widget request: $widgetRequest, Button ID: $buttonIdFromWidget")
+
+        // Manejar sesión existente
+        handleExistingSession()
+    }
+
+    private fun handleExistingSession() {
+        if (viewModel.verififySession()) {
+            Log.d("LoginFragment", "Sesión ya verificada, manejando redirección...")
+
+            if (widgetRequest) {
+                // Si ya está logueado Y es widget request, notificar a MainActivity
+                // Usar post para asegurar que MainActivity esté listo
+                handler.post {
+                    val mainActivity = requireActivity() as? MainActivity
+                    if (mainActivity != null) {
+                        Log.d("LoginFragment", "Ya logueado + widget request, notificando MainActivity")
+                        mainActivity.onWidgetLoginSuccess()
+                    } else {
+                        Log.e("LoginFragment", "MainActivity no disponible")
+                    }
+                }
+            } else {
+                // Si ya está logueado pero NO es widget request, ir a home
+                Log.d("LoginFragment", "Ya logueado + NO widget request, yendo a home")
+                navigateToHome()
+            }
+        } else {
+            // Si NO está logueado, mostrar UI de login
+            setupUI()
+            observeViewModel()
+        }
     }
 
     private fun setupUI() {
@@ -160,8 +204,30 @@ class LoginFragment : Fragment() {
             }
 
             if (state.isSuccess) {
-                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                Log.d("LoginFragment", "Login exitoso, widgetRequest: $widgetRequest")
+
+                if (widgetRequest) {
+                    // Si es request del widget, notificar a MainActivity
+                    val mainActivity = requireActivity() as? MainActivity
+                    if (mainActivity != null) {
+                        mainActivity.onWidgetLoginSuccess()
+                    } else {
+                        Log.e("LoginFragment", "MainActivity no disponible después del login")
+                    }
+                } else {
+                    // Flujo normal
+                    navigateToHome()
+                }
             }
         }
+    }
+
+    private fun navigateToHome() {
+        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+    }
+
+    override fun onDestroyView() {
+        handler.removeCallbacksAndMessages(null)
+        super.onDestroyView()
     }
 }

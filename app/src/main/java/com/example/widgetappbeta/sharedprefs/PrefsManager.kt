@@ -2,6 +2,7 @@ package com.example.widgetappbeta.sharedprefs
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 object PrefsManager {
     private const val PREFS_NAME = "AppSessionPerfs"
@@ -14,18 +15,12 @@ object PrefsManager {
 
     }
 
-    //funciones de logica
-
     fun isLoggedIn(): Boolean {
         return sharedPreferences.getBoolean(KEY_LOGGED_IN, false)
     }
 
     fun setLoggedIn(isLoggedIn: Boolean) {
-        sharedPreferences.edit().putBoolean(KEY_LOGGED_IN, isLoggedIn).apply()
+        sharedPreferences.edit { putBoolean(KEY_LOGGED_IN, isLoggedIn) }
     }
-
-
-
-
 
 }
