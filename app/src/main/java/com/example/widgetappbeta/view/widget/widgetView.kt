@@ -23,24 +23,30 @@ class WidgetView(private val context: Context) {
         views.setImageViewResource(R.id.icono_mirar, iconoVisibilidad)
 
         val toggleIntent = Intent(context, InventoryWidgetProvider::class.java).apply {
-            action = InventoryWidgetProvider.ACTION_TOGGLE_VISIBILITY
+            action = InventoryWidgetProvider.ACTION_WIDGET_CLICK
+            putExtra(InventoryWidgetProvider.EXTRA_BUTTON_ID, InventoryWidgetProvider.BUTTON_TOGGLE_SALDO)
         }
         val togglePendingIntent = PendingIntent.getBroadcast(
             context,
-            0,
+            InventoryWidgetProvider.BUTTON_TOGGLE_SALDO,
             toggleIntent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         views.setOnClickPendingIntent(R.id.icono_mirar, togglePendingIntent)
 
-        val intentGestionar = Intent(context, com.example.widgetappbeta.view.MainActivity::class.java)
-        val pendingIntentGestionar = PendingIntent.getActivity(
+
+        val manageIntent = Intent(context, InventoryWidgetProvider::class.java).apply {
+            action = InventoryWidgetProvider.ACTION_WIDGET_CLICK
+            putExtra(InventoryWidgetProvider.EXTRA_BUTTON_ID, InventoryWidgetProvider.BUTTON_MANAGE_INVENTORY)
+        }
+        val managePendingIntent = PendingIntent.getBroadcast(
             context,
-            1,
-            intentGestionar,
+            InventoryWidgetProvider.BUTTON_MANAGE_INVENTORY,
+            manageIntent,
             PendingIntent.FLAG_IMMUTABLE
         )
-        views.setOnClickPendingIntent(R.id.icono_gestionar, pendingIntentGestionar)
+        views.setOnClickPendingIntent(R.id.icono_gestionar, managePendingIntent)
+
 
         return views
     }
