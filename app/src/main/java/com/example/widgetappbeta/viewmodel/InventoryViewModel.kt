@@ -12,24 +12,57 @@ class InventoryViewModel @Inject constructor(
     private val repository: InventoryRepository
 ) : ViewModel() {
 
-    // LiveData - Lista de inventario
+    // ============================================
+    // 📦 LISTA DE INVENTARIO
+    // ============================================
     private val _listInventory = MutableLiveData<MutableList<InventoryF>>()
     val listInventory: LiveData<MutableList<InventoryF>> get() = _listInventory
 
-    // LiveData - Estado loading
     private val _progressState = MutableLiveData(false)
     val progressState: LiveData<Boolean> get() = _progressState
 
 
-    // -----------------------------
-    //   🔹 GUARDAR PRODUCTO
-    // -----------------------------
-    fun saveInventory(inventory: InventoryF, onResult: (Boolean, String?) -> Unit) {
+    // ============================================
+    // ✏️ CAMPOS DEL FORMULARIO (Para Add/Edit)
+    // ============================================
+    val codigo = MutableLiveData<String>()
+    val nombre = MutableLiveData<String>()
+    val precio = MutableLiveData<String>()
+    val cantidad = MutableLiveData<String>()
+
+    // Validación en tiempo real
+    val isFormValid: LiveData<Boolean> = MediatorLiveData<Boolean>().apply {
+        val validator = Observer<Any> {
+            value = !codigo.value.isNullOrBlank() &&
+                    !nombre.value.isNullOrBlank() &&
+                    !precio.value.isNullOrBlank() &&
+                    !cantidad.value.isNullOrBlank()
+        }
+        addSource(codigo, validator)
+        addSource(nombre, validator)
+        addSource(precio, validator)
+        addSource(cantidad, validator)
+    }
+
+
+    // ============================================
+    // 🔹 GUARDAR PRODUCTO
+    // ============================================
+    fun saveInventory(
+        inventory: InventoryF,
+        updateList: Boolean = false,
+        onResult: (Boolean, String?) -> Unit
+    ) {
         viewModelScope.launch {
             try {
                 _progressState.value = true
                 repository.saveInventory(inventory)
-                getListInventory()
+
+                // Solo actualizar lista si se solicita explícitamente
+                if (updateList) {
+                    getListInventory()
+                }
+
                 onResult(true, null)
             } catch (e: Exception) {
                 onResult(false, e.message)
@@ -39,16 +72,48 @@ class InventoryViewModel @Inject constructor(
         }
     }
 
+    // Sobrecarga: Guardar desde campos del formulario
+    fun saveInventoryFromForm(onResult: (Boolean, String?) -> Unit) {
+        val cod = codigo.value?.toIntOrNull()
+        val nom = nombre.value?.trim()
+        val pre = precio.value?.toDoubleOrNull()
+        val cant = cantidad.value?.toIntOrNull()
 
-    // -----------------------------
-    //   🔹 ELIMINAR PRODUCTO
-    // -----------------------------
-    fun deleteInventory(inventory: InventoryF, onResult: ((Boolean, String?) -> Unit)? = null) {
+        if (cod == null || nom.isNullOrBlank() || pre == null || cant == null) {
+            onResult(false, "Datos inválidos")
+            return
+        }
+
+        val nuevoProducto = InventoryF(
+            id = cod,
+            name = nom,
+            price = pre,
+            quantity = cant
+        )
+
+        // No actualizar lista - el ListFragment lo hará en onResume
+        saveInventory(nuevoProducto, updateList = false, onResult)
+    }
+
+
+    // ============================================
+    // 🗑️ ELIMINAR PRODUCTO
+    // ============================================
+    fun deleteInventory(
+        inventory: InventoryF,
+        updateList: Boolean = false,
+        onResult: ((Boolean, String?) -> Unit)? = null
+    ) {
         viewModelScope.launch {
             try {
                 _progressState.value = true
                 repository.deleteInventory(inventory)
-                getListInventory()
+
+                // Solo actualizar lista si se solicita explícitamente
+                if (updateList) {
+                    getListInventory()
+                }
+
                 onResult?.invoke(true, null)
             } catch (e: Exception) {
                 onResult?.invoke(false, e.message)
@@ -59,15 +124,24 @@ class InventoryViewModel @Inject constructor(
     }
 
 
-    // -----------------------------
-    //   🔹 ACTUALIZAR PRODUCTO
-    // -----------------------------
-    fun updateInventory(inventory: InventoryF, onResult: (Boolean, String?) -> Unit) {
+    // ============================================
+    // ✏️ ACTUALIZAR PRODUCTO
+    // ============================================
+    fun updateInventory(
+        inventory: InventoryF,
+        updateList: Boolean = false,
+        onResult: (Boolean, String?) -> Unit
+    ) {
         viewModelScope.launch {
             try {
                 _progressState.value = true
                 repository.updateInventory(inventory)
-                getListInventory()
+
+                // Solo actualizar lista si se solicita explícitamente
+                if (updateList) {
+                    getListInventory()
+                }
+
                 onResult(true, null)
             } catch (e: Exception) {
                 onResult(false, e.message)
@@ -77,10 +151,33 @@ class InventoryViewModel @Inject constructor(
         }
     }
 
+    // Sobrecarga: Actualizar desde campos del formulario
+    fun updateInventoryFromForm(onResult: (Boolean, String?) -> Unit) {
+        val cod = codigo.value?.toIntOrNull()
+        val nom = nombre.value?.trim()
+        val pre = precio.value?.toDoubleOrNull()
+        val cant = cantidad.value?.toIntOrNull()
 
-    // -----------------------------
-    //   🔹 OBTENER LISTA
-    // -----------------------------
+        if (cod == null || nom.isNullOrBlank() || pre == null || cant == null) {
+            onResult(false, "Datos inválidos")
+            return
+        }
+
+        val productoActualizado = InventoryF(
+            id = cod,
+            name = nom,
+            price = pre,
+            quantity = cant
+        )
+
+        // No actualizar lista - el ListFragment lo hará en onResume
+        updateInventory(productoActualizado, updateList = false, onResult)
+    }
+
+
+    // ============================================
+    // 📋 OBTENER LISTA DE INVENTARIO
+    // ============================================
     fun getListInventory() {
         viewModelScope.launch {
             try {
@@ -92,5 +189,24 @@ class InventoryViewModel @Inject constructor(
                 _progressState.value = false
             }
         }
+    }
+
+
+    // ============================================
+    // 🧹 LIMPIAR FORMULARIO
+    // ============================================
+    fun clearForm() {
+        codigo.value = ""
+        nombre.value = ""
+        precio.value = ""
+        cantidad.value = ""
+    }
+
+    // Cargar datos en el formulario (para edición)
+    fun loadInventoryToForm(inventory: InventoryF) {
+        codigo.value = inventory.id.toString()
+        nombre.value = inventory.name
+        precio.value = inventory.price.toString()
+        cantidad.value = inventory.quantity.toString()
     }
 }
