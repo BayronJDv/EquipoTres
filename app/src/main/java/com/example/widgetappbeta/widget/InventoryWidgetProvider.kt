@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.example.widgetappbeta.view.MainActivity
 import com.example.widgetappbeta.repository.InventoryRepository
 import com.example.widgetappbeta.sharedprefs.PrefsManager
@@ -29,6 +30,7 @@ class InventoryWidgetProvider : AppWidgetProvider() {
 
         const val ACTION_WIDGET_CLICK = "com.example.widgetappbeta.WIDGET_BUTTON_CLICK"
         const val EXTRA_BUTTON_ID = "com.example.widgetappbeta.EXTRA_BUTTON_ID"
+        const val ACTION_LOGOUT_WIDGET_RESET = "com.example.widgetappbeta.LOGOUT_WIDGET_RESET"
         const val BUTTON_TOGGLE_SALDO = 1
         const val BUTTON_MANAGE_INVENTORY = 2
         const val EXTRA_WIDGET_REQUEST = "com.example.widgetappbeta.WIDGET_REQUEST"
@@ -45,6 +47,13 @@ class InventoryWidgetProvider : AppWidgetProvider() {
                 putExtra(EXTRA_WIDGET_REQUEST, true)
                 putExtra(EXTRA_BUTTON_ID, buttonId)
             }
+        }
+
+        fun sendLogoutResetBroadcast(context: Context) {
+            val intent = Intent(context, InventoryWidgetProvider::class.java).apply {
+                action = ACTION_LOGOUT_WIDGET_RESET
+            }
+            context.sendBroadcast(intent)
         }
 
         suspend fun actualizarWidget(context: Context, manager: AppWidgetManager, widgetId: Int) {
@@ -122,6 +131,24 @@ class InventoryWidgetProvider : AppWidgetProvider() {
                     }
                 } else {
                     handleNotLoggedInActions(context, buttonId)
+                }
+            }
+
+            ACTION_LOGOUT_WIDGET_RESET -> {
+                widgetScope.launch {
+                    saldoVisible.set(false)
+
+                    val manager = AppWidgetManager.getInstance(context)
+                    val widgetIds = manager.getAppWidgetIds(
+                        ComponentName(context, InventoryWidgetProvider::class.java)
+                    )
+
+                    widgetIds.forEach { id ->
+                        try {
+                            actualizarWidget(context, manager, id)
+                        } catch (e: Exception) {
+                        }
+                    }
                 }
             }
 
