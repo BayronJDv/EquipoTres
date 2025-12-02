@@ -102,7 +102,6 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getListInventory()
     }
 
     override fun onDestroyView() {
