@@ -9,19 +9,21 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.widgetappbeta.databinding.FragmentDetailBinding
-import com.example.widgetappbeta.model.Inventory
+import com.example.widgetappbeta.model.InventoryF
 import com.example.widgetappbeta.viewmodel.InventoryViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
-import java.util.*
+import java.util.Locale
 
 @AndroidEntryPoint
 class DetailFragment : Fragment() {
 
     private lateinit var binding: FragmentDetailBinding
     private val viewModel: InventoryViewModel by viewModels()
+
+    private var producto: InventoryF? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,22 +41,22 @@ class DetailFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        // Obtener producto recibido desde HomeFragment
-        val producto = arguments?.getSerializable("inventory") as? Inventory
+        // Recibir objeto Serializable
+        producto = arguments?.getSerializable("inventory_item") as? InventoryF
 
-        // Mostrar los datos del producto
+        // Mostrar datos
         producto?.let { mostrarDetalleProducto(it) }
 
-        // Botón eliminar con diálogo
+        // ELIMINAR
         binding.btnEliminar.setOnClickListener {
-            producto?.let {
+            producto?.let { item ->
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle("Confirmar eliminación")
                     .setMessage("¿Desea eliminar este producto?")
                     .setNegativeButton("No") { dialog, _ -> dialog.dismiss() }
-                    .setPositiveButton("Si") { _, _ ->
+                    .setPositiveButton("Sí") { _, _ ->
                         lifecycleScope.launch {
-                            viewModel.deleteInventory(it)
+                            viewModel.deleteInventory(item)
                             findNavController().navigateUp()
                         }
                     }
@@ -62,10 +64,11 @@ class DetailFragment : Fragment() {
             }
         }
 
-        // Botón flotante para editar
+        // EDITAR
         binding.fabEditar.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putSerializable("productoEditar", producto)
+            val bundle = Bundle().apply {
+                putSerializable("productoEditar", producto)
+            }
             findNavController().navigate(
                 com.example.widgetappbeta.R.id.editFragment,
                 bundle
@@ -73,15 +76,16 @@ class DetailFragment : Fragment() {
         }
     }
 
-    private fun mostrarDetalleProducto(producto: Inventory) {
-        val formato = NumberFormat.getNumberInstance(Locale("es", "CO"))
-        formato.minimumFractionDigits = 2
+    private fun mostrarDetalleProducto(prod: InventoryF) {
+        val formato = NumberFormat.getNumberInstance(Locale("es", "CO")).apply {
+            minimumFractionDigits = 2
+        }
 
-        val total = producto.price * producto.quantity
+        val total = prod.price * prod.quantity
 
-        binding.tvNombre.text = "${producto.name}"
-        binding.tvPrecio.text = "$ ${formato.format(producto.price)}"
-        binding.tvCantidad.text = "${producto.quantity}"
+        binding.tvNombre.text = prod.name
+        binding.tvPrecio.text = "$ ${formato.format(prod.price)}"
+        binding.tvCantidad.text = prod.quantity.toString()
         binding.tvTotal.text = "$ ${formato.format(total)}"
     }
 }
